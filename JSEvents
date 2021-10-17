@@ -1,0 +1,28 @@
+let originalBXOnCustomEvent = BX.onCustomEvent;
+BX.onCustomEvent = (eventObject, eventName, eventParams, secureParams) => {
+
+    let logData = {
+        eventObject: eventObject,
+        eventName: eventName,
+        eventParams: eventParams,
+        eventParamsClassNames : [],
+        secureParams: secureParams
+    }
+
+    for (let i in eventParams) {
+        let param = eventParams[i];
+        if (
+            param !== null
+            && typeof param == 'object'
+            && param.constructor
+        ) {
+            logData['eventParamsClassNames'].push(param.constructor.name)
+        } else {
+            logData['eventParamsClassNames'].push(null);
+        }
+    }
+
+    console.log(logData);
+
+    originalBXOnCustomEvent.apply(null, [eventObject, eventName, eventParams, secureParams]);
+}
